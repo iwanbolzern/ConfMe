@@ -5,6 +5,8 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
+pylint = "*"
+twine = "*"
 
 [packages]
 pyyaml = "*"
