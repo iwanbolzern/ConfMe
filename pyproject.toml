@@ -17,7 +17,7 @@ packages = [
 
 
 [tool.poetry.dependencies]
-python = "^3.5"
+python = "^3.7"
 pyyaml = "^5.3"
 
 [tool.poetry.dev-dependencies]
