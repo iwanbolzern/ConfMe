@@ -5,7 +5,7 @@ from os import path
 import pytest
 
 from confme import configclass, load_config
-from confme.parsing.parser_secret import Secret
+from confme.annotation import Secret
 
 
 @configclass
