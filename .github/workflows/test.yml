@@ -28,4 +28,5 @@ jobs:
 #        pylint --rcfile tests/pylintrc tests
     - name: Test with pytest
       run: |
+        ls -l
         pytest
