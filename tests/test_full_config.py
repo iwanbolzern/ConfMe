@@ -22,6 +22,8 @@ class RootConfig:
     childNode: ChildNode
 
 
+
+
 @pytest.fixture
 def config_yaml(tmp_path: str):
     config_content = 'rootValue: 1\n' \

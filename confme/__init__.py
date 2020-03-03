@@ -1,15 +1,15 @@
 """ConfigurationMadeEasy package exports"""
 from dataclasses import dataclass
-from typing import get_type_hints, Dict
+from typing import get_type_hints, Dict, Any
 
-from source_backend import file_backend
-from parsing import root_parser
+from confme.source_backend import file_backend
+from confme.parsing import root_parser
 
 
-def configclass(_cls):
-    """
-    :param _cls:
-    :return:
+def configclass(_cls: Any) -> Any:
+    """Class annotation to mark a class as configclass and use it as config holder.
+    :param _cls: class type to mark as configclass
+    :return: marked class type
     """
     _cls.__config_class__ = True
     return dataclass(_cls)
@@ -22,18 +22,18 @@ def _is_config_class(cls):
     return '__config_class__' in cls.__dict__
 
 
-def load_config(config_class, path: str):
-    """
-    :param config_class:
-    :param path:
-    :return:
+def load_config(config_class: Any, path: str) -> Any:
+    """Load your configuration file into your config class structure.
+    :param config_class: Root class to map the configuration file to
+    :param path: path to configuration file
+    :return: instance of config_class with all values added from the config file
     """
     config_content = file_backend.parse_file(path)
 
     return _fill_config_classes(config_class, config_content)
 
 
-def _fill_config_classes(config_type_head, yaml_head: Dict):
+def _fill_config_classes(config_type_head: Any, yaml_head: Dict) -> Any:
     params = {}
     for attr_name, attr_type in get_type_hints(config_type_head).items():
         if _is_config_class(attr_type):

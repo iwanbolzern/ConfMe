@@ -83,6 +83,21 @@ my_config = load_config(MyConfig, 'config.yaml')
 print(f'My password is: {my_config.database.password}')
 ```
 
+### Range[NUMBER_TYPE, FROM, TO]
+```python
+...
+from confme import configclass, load_config
+from confme.annotation import Secret
 
-## LICENCE
+@configclass
+class DatabaseConfig:
+    ...
+    password: Range[int, 2, 3]
+```
+
+### SELECTION[args...]
+
+
+
+## LICENSE
 ConfMe is released under the [MIT](LICENSE) license.
