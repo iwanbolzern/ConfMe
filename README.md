@@ -1,5 +1,5 @@
 # ConfMe: Configuration Made Easy 💖
-![Python package](https://github.com/iwanbolzern/confme/workflows/Python%20package/badge.svg)
+![Test](https://github.com/iwanbolzern/ConfMe/workflows/Test/badge.svg?branch=master)
 
 ConfMe is a simple to use, production ready application configuration management library, which takes into consideration the following three thoughts:
 1. Access to configuration values must be safe at runtime. **No ```myconfig['value1']['subvalue']``` anymore!**
