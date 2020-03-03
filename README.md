@@ -1,13 +1,13 @@
-# confme: Configuration Made Easy 💖
+# ConfMe: Configuration Made Easy 💖
 ![Python package](https://github.com/iwanbolzern/confme/workflows/Python%20package/badge.svg)
 
-confme is build for production ready applications under the following three conditions:
+ConfMe is a simple to use, production ready application configuration management library, which takes into consideration the following three thoughts:
 1. Access to configuration values must be safe at runtime. **No ```myconfig['value1']['subvalue']``` anymore!**
 2. The configuration must be checked for consistency at startup e.g. type check, range check, ...
-3. Secrets shall be injected from environment variables
+3. Secrets shall be injectable from environment variables
 
 ## Installation
-confme can be installed from the official python package repository [pypi](https://pypi.org/project/confme/)
+ConfMe can be installed from the official python package repository [pypi](https://pypi.org/project/confme/)
 ```
 pip install confme
 ```
@@ -21,7 +21,7 @@ poetry add confme
 ```
 
 ## Basic Usage of confme
-Define your config structure as plain python objects with a few annotations:
+Define your config structure as plain python objects with type annotations:
 ```python
 from confme import configclass, load_config
 
@@ -36,7 +36,7 @@ class MyConfig:
     name: int
     database: DatabaseConfig
 ```
-Create a configuration yaml file:
+Create a configuration yaml file with the same structure as your classes have:
 ```yaml
 name: "Database Application"
 database:
@@ -83,5 +83,6 @@ my_config = load_config(MyConfig, 'config.yaml')
 print(f'My password is: {my_config.database.password}')
 ```
 
+
 ## LICENCE
-confme is released under the [MIT](LICENSE) license.
+ConfMe is released under the [MIT](LICENSE) license.
