@@ -19,9 +19,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install poetry>=0.12
+        pip install poetry
         poetry config virtualenvs.create false
-        poetry install --no-root
+        poetry install
 #    - name: Lint with pylint
 #      run: |
 #        pylint --rcfile confme/pylintrc confme
