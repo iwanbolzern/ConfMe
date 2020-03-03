@@ -1,7 +1,7 @@
 from typing import Any
 
 from confme.parsing.parser_secret import ParserSecret
-from parsing.parser_primitive import ParserPrimitive
+from confme.parsing.parser_primitive import ParserPrimitive
 
 
 class UnknownTypeException(Exception):
