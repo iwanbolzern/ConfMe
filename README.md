@@ -6,6 +6,8 @@ ConfMe is a simple to use, production ready application configuration management
 2. The configuration must be checked for consistency at startup e.g. type check, range check, ...
 3. Secrets shall be injectable from environment variables
 
+ConfMe makes all these features possible with just a few type annotations on plain Python objects.
+
 ## Installation
 ConfMe can be installed from the official python package repository [pypi](https://pypi.org/project/confme/)
 ```
@@ -36,7 +38,7 @@ class MyConfig:
     name: int
     database: DatabaseConfig
 ```
-Create a configuration yaml file with the same structure as your classes have:
+Create a configuration yaml file with the same structure as your configuration classes have:
 ```yaml
 name: "Database Application"
 database:
@@ -59,10 +61,11 @@ At the moment the following type annotations are supported:
 - int
 - float
 - [Secret](#Secret)
-- Range
+- [Range](#Range) not yet implemented
+- [Enum](#Enum) not yet implemented
 
 ### Secret['ENV_NAME', TYPE]
-To inject secrets from environment variables into the configuration structure the Secret annotation should be used. This is especially handy when you're deploying applications by using docker. Therefore, let's extend the previous example with a Secret annotation:
+With the Secret annotation you can inject secrets from environment variables directly into your configuration structure. This is especially handy when you're deploying applications by using docker. Therefore, let's extend the previous example with a Secret annotation:
 ```python
 ...
 from confme import configclass, load_config
