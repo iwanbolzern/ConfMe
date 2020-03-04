@@ -1,5 +1,6 @@
 from typing import Any
 
+from confme.parsing.parser_range import ParserRange
 from confme.parsing.parser_secret import ParserSecret
 from confme.parsing.parser_primitive import ParserPrimitive
 
@@ -20,5 +21,6 @@ def parse(attr_name: str, attr_type: Any, value: Any):
 
 PARSER = [
     ParserPrimitive(parse),
-    ParserSecret(parse)
+    ParserSecret(parse),
+    ParserRange(parse),
 ]

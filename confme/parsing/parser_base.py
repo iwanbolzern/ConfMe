@@ -21,3 +21,13 @@ class Parser(ABC):
 
     def parse(self, attr_name, attr_type, value):
         pass
+
+
+class CustomType(ABC):
+    __slots__ = ()
+
+    def __new__(cls, *args, **kwds):
+        raise SyntaxError(f'{cls.__name__} is only a marker class and can not be instantiated')
+
+    def __init_subclass__(cls, *args, **kwargs):
+        pass

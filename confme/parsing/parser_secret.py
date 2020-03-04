@@ -1,15 +1,10 @@
 import os
 from typing import Any
 
-from confme.parsing.parser_base import Parser, ParseError
+from confme.parsing.parser_base import Parser, ParseError, CustomType
 
 
-class Secret:
-    __slots__ = ()
-
-    def __new__(cls, *args, **kwds):
-        raise SyntaxError(f'{cls.__name__} is only a marker class and can not be instantiated')
-
+class Secret(CustomType):
     def __class_getitem__(cls, params):
         assert len(params) == 2, 'Params must be of length two'
 
@@ -17,9 +12,6 @@ class Secret:
         cls.__value_type__ = params[1]
 
         return cls
-
-    def __init_subclass__(cls, *args, **kwargs):
-        pass
 
 
 class ParserSecret(Parser):
