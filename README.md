@@ -64,8 +64,8 @@ ConfMe is based on pydantic and supports all annotations provided by pydantic. T
 - bool
 - typing.List[x]
 - typing.Optional[x]
-- [Secret](#Secret)
-- [Range](#Range)
+- [Secret](#secret)
+- [Range](#range)
 - [enum.Enum]()
 - [enum.IntEnum]()
 
