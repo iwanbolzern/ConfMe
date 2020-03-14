@@ -1,5 +1,15 @@
 # module of all supported annotations
-from confme.parsing.parser_secret import Secret
-from confme.parsing.parser_range import Range
 
-__all__ = ['Secret', 'Range']
+import pydantic
+from pydantic import Field
+
+
+def Secret(env_var: str):
+    return Field(..., env=env_var)
+
+
+def Range(gt: float = None, ge: float = None, lt: float = None, le: float = None):
+    return Field(..., gt=gt, ge=ge, lt=lt, le=le)
+
+
+__all__ = pydantic.__all__ + [Secret, Range]

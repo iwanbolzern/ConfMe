@@ -4,22 +4,20 @@ from os import path
 
 import pytest
 
-from confme import configclass, load_config
+from confme import BaseConfig
 from confme.annotation import Secret, Range
 
 
-@configclass
-class ChildNode:
+class ChildNode(BaseConfig):
     testStr: str
     testInt: int
     testFloat: float
-    password: Secret['highSecure', str]
+    password: str = Secret('highSecure')
 
 
-@configclass
-class RootConfig:
+class RootConfig(BaseConfig):
     rootValue: int
-    rangeValue: Range[int, 4, 6]
+    rangeValue: int = Range(4, None, 6)
     childNode: ChildNode
 
 
@@ -42,7 +40,7 @@ def config_yaml(tmp_path: str):
 def test_load_config(config_yaml: str):
     os.environ['highSecure'] = 'superSecureSecret'
 
-    root_config = load_config(RootConfig, config_yaml)
+    root_config = RootConfig.load(config_yaml)
 
     assert root_config.rootValue == 1
     assert root_config.rangeValue == 5
