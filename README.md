@@ -28,16 +28,14 @@ poetry add confme
 ## Basic Usage of confme
 Define your config structure as plain python objects with type annotations:
 ```python
-from confme import configclass, load_config
+from confme import BaseConfig
 
-@configclass
-class DatabaseConfig:
+class DatabaseConfig(BaseConfig):
     host: str
     port: int
     user: str
 
-@configclass
-class MyConfig:
+class MyConfig(BaseConfig):
     name: int
     database: DatabaseConfig
 ```
@@ -51,7 +49,7 @@ database:
 ```
 Load the yaml file into your Python object structure and access it in a secure manner:
 ```python
-my_config = load_config(MyConfig, 'config.yaml')
+my_config = MyConfig.load('config.yaml')
 
 print(f'Using database connection {my_config.database.host} '
       f'on port {my_config.database.port}')
@@ -59,25 +57,28 @@ print(f'Using database connection {my_config.database.host} '
 In the background the yaml file is parsed and mapped to the defined object structure. While mapping the values to object properties, type checks are performed. If a value is not available or is not of the correct type, an error is generated already when the configuration is loaded.
 
 ## Supported Annotations
-At the moment the following type annotations are supported:
+ConfMe is based on pydantic and supports all annotations provided by pydantic. The most important annotations are listed and explain bellow. For the whole list, please checkout [Field Types](https://pydantic-docs.helpmanual.io/usage/types/):
 - str
 - int
 - float
+- bool
+- typing.List[x]
+- typing.Optional[x]
 - [Secret](#Secret)
-- [Range](#Range) not yet implemented
-- [Enum](#Enum) not yet implemented
+- [Range](#Range)
+- [enum.Enum]()
+- [enum.IntEnum]()
 
-### Secret['ENV_NAME', TYPE]
+### Secret
 With the Secret annotation you can inject secrets from environment variables directly into your configuration structure. This is especially handy when you're deploying applications by using docker. Therefore, let's extend the previous example with a Secret annotation:
 ```python
 ...
-from confme import configclass, load_config
+from confme import BaseConfig
 from confme.annotation import Secret
 
-@configclass
-class DatabaseConfig:
+class DatabaseConfig(BaseConfig):
     ...
-    password: Secret['highSecurePassword', str]
+    password: str = Secret('highSecurePassword')
 ```
 Now set the password to the defined environment variable:
 ```bash
@@ -85,20 +86,26 @@ export highSecurePassword="This is my password"
 ```
 Load your config and check for the injected password.
 ```
-my_config = load_config(MyConfig, 'config.yaml')
+my_config = MyConfig.load('config.yaml')
 print(f'My password is: {my_config.database.password}')
 ```
 
-### Range[NUMBER_TYPE, FROM, TO]
+### Range
+ConfME supports OpenRange, ClosedRange and MixedRange values. The terms open and close are similar to open and closed intervals in mathematics. This means, if you want to include the lower and upper range use ClosedRange otherwise OpenRange:  
+ClosedRange(2, 3) will include 2 and 3  
+OpenRange(2, 3) will not include 2 and 3
+
+If you want to have a mixture of both, e.g. include 2 but exclude 3 use MixedRange:  
+MixedRange(ge=2, lt=3) will include 2 but exclude 3
+
 ```python
 ...
-from confme import configclass, load_config
-from confme.annotation import Secret
+from confme import BaseConfig
+from confme.annotation import ClosedRange
 
-@configclass
-class DatabaseConfig:
+class DatabaseConfig(BaseConfig):
     ...
-    password: Range[int, 2, 3]
+    password:int = ClosedRange(2, 3)
 ```
 
 ### SELECTION[args...]

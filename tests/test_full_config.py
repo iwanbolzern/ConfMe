@@ -5,7 +5,7 @@ from os import path
 import pytest
 
 from confme import BaseConfig
-from confme.annotation import Secret, Range
+from confme.annotation import Secret, ClosedRange
 
 
 class ChildNode(BaseConfig):
@@ -17,7 +17,7 @@ class ChildNode(BaseConfig):
 
 class RootConfig(BaseConfig):
     rootValue: int
-    rangeValue: int = Range(4, None, 6)
+    rangeValue: int = ClosedRange(4, 6)
     childNode: ChildNode
 
 
