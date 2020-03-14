@@ -1,6 +1,8 @@
 import os
 import uuid
+from enum import Enum
 from os import path
+from typing import Optional
 
 import pytest
 
@@ -8,11 +10,18 @@ from confme import BaseConfig
 from confme.annotation import Secret, ClosedRange
 
 
+class AnyEnum(Enum):
+    V1 = 'value1'
+    V2 = 'value2'
+
+
 class ChildNode(BaseConfig):
     testStr: str
     testInt: int
     testFloat: float
+    testOptional: Optional[float]
     password: str = Secret('highSecure')
+    anyEnum: AnyEnum
 
 
 class RootConfig(BaseConfig):
@@ -28,7 +37,8 @@ def config_yaml(tmp_path: str):
                      'childNode:\n' \
                      '  testStr: "Das ist ein test"\n' \
                      '  testInt: 42\n' \
-                     '  testFloat: 42.42\n'
+                     '  testFloat: 42.42\n' \
+                     '  anyEnum: value2'
 
     config_path = path.join(tmp_path, f'{uuid.uuid4()}.yaml')
     with open(config_path, 'w') as config_file:
@@ -47,4 +57,6 @@ def test_load_config(config_yaml: str):
     assert root_config.childNode.testStr == 'Das ist ein test'
     assert root_config.childNode.testInt == 42
     assert root_config.childNode.testFloat == 42.42
+    assert root_config.childNode.testOptional is None
     assert root_config.childNode.password == os.environ['highSecure']
+    assert root_config.childNode.anyEnum == AnyEnum.V2

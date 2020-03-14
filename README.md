@@ -66,8 +66,7 @@ ConfMe is based on pydantic and supports all annotations provided by pydantic. T
 - typing.Optional[x]
 - [Secret](#secret)
 - [Range](#range)
-- [enum.Enum]()
-- [enum.IntEnum]()
+- [Enum](#enum)
 
 ### Secret
 With the Secret annotation you can inject secrets from environment variables directly into your configuration structure. This is especially handy when you're deploying applications by using docker. Therefore, let's extend the previous example with a Secret annotation:
@@ -92,11 +91,11 @@ print(f'My password is: {my_config.database.password}')
 
 ### Range
 ConfME supports OpenRange, ClosedRange and MixedRange values. The terms open and close are similar to open and closed intervals in mathematics. This means, if you want to include the lower and upper range use ClosedRange otherwise OpenRange:  
-ClosedRange(2, 3) will include 2 and 3  
-OpenRange(2, 3) will not include 2 and 3
+* ```ClosedRange(2, 3)``` will include 2 and 3
+* ```OpenRange(2, 3)``` will not include 2 and 3
 
 If you want to have a mixture of both, e.g. include 2 but exclude 3 use MixedRange:  
-MixedRange(ge=2, lt=3) will include 2 but exclude 3
+* ```MixedRange(ge=2, lt=3)``` will include 2 but exclude 3
 
 ```python
 ...
@@ -105,12 +104,21 @@ from confme.annotation import ClosedRange
 
 class DatabaseConfig(BaseConfig):
     ...
-    password:int = ClosedRange(2, 3)
+    password: int = ClosedRange(2, 3)
 ```
 
-### SELECTION[args...]
+### Enum
+```python
+from enum import Enum
 
+class DatabaseConnection(Enum):
+    TCP = 'tcp'
+    UDP = 'udp'
 
+class DatabaseConfig(BaseConfig):
+    ...
+    connection_type: DatabaseConnection
+```
 
 ## LICENSE
 ConfMe is released under the [MIT](LICENSE) license.
