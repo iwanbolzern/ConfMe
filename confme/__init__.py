@@ -15,5 +15,7 @@ class BaseConfig(BaseSettings):
         :return: instance of config_class with all values added from the config file
         """
         config_content = source_backend.parse_file(path)
+        from confme.argument_overwrite import overwrite_config
+        overwrite_config(cls)
 
         return cls.parse_obj(config_content)
