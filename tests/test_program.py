@@ -11,6 +11,6 @@ class RootConfig(BaseConfig):
     childNode: ChildNode
 
 
-config = RootConfig.load('tests/test.yaml')
+#config = RootConfig.load('tests/test.yaml')
 
 
