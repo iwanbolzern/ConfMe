@@ -71,7 +71,6 @@ ConfMe is based on pydantic and supports all annotations provided by pydantic. T
 ### Secret
 With the Secret annotation you can inject secrets from environment variables directly into your configuration structure. This is especially handy when you're deploying applications by using docker. Therefore, let's extend the previous example with a Secret annotation:
 ```python
-...
 from confme import BaseConfig
 from confme.annotation import Secret
 
@@ -98,7 +97,6 @@ If you want to have a mixture of both, e.g. include 2 but exclude 3 use MixedRan
 * ```MixedRange(ge=2, lt=3)``` will include 2 but exclude 3
 
 ```python
-...
 from confme import BaseConfig
 from confme.annotation import ClosedRange
 
@@ -108,7 +106,9 @@ class DatabaseConfig(BaseConfig):
 ```
 
 ### Enum
+If a Python Enum is set as type annotation, ConfMe expect to find the enum value in the configuration file.
 ```python
+from confme import BaseConfig
 from enum import Enum
 
 class DatabaseConnection(Enum):
@@ -118,6 +118,41 @@ class DatabaseConnection(Enum):
 class DatabaseConfig(BaseConfig):
     ...
     connection_type: DatabaseConnection
+```
+
+## Overwrite Parameters from Command Line
+Especially in the Data Science and Machine Learning area it is useful to pass certain parameters for experimental purposes as command line arguments. Therefore, all properties defined in the configuration classes are automatically offered as command line arguments in the following format:
+
+**my_program.py:**
+```python
+from confme import BaseConfig
+
+class DatabaseConfig(BaseConfig):
+    host: str
+    port: int
+    user: str
+
+class MyConfig(BaseConfig):
+    name: int
+    database: DatabaseConfig
+
+config = MyConfig.load('test.yaml')
+```
+When you now start your program from the command line with the ```--help``` argument, you get the full list of all configuration options:
+```shell
+$ python my_program.py --help
+usage: my_program.py [-h] [--name NAME] [--database.host DATABASE.HOST] [--database.port DATABASE.PORT] [--database.user DATABASE.USER]
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+Configuration Parameters:
+  With the parameters specified bellow, the configuration values from the config file can be overwritten.
+
+  --name NAME
+  --database.host DATABASE.HOST
+  --database.port DATABASE.PORT
+  --database.user DATABASE.USER
 ```
 
 ## LICENSE
