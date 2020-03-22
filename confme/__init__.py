@@ -1,8 +1,35 @@
 """ConfigurationMadeEasy package exports"""
+import argparse
 
 from pydantic import BaseSettings
 
 from confme import source_backend
+from confme.utils.typing import get_schema
+from confme.utils.dict_util import flatten, InfiniteDict
+
+
+def argument_overwrite(config_cls):
+    # extract possible parameters
+    config_dict = get_schema(config_cls)
+    parameters = flatten(config_dict)
+
+    # get arguments from command line
+    parser = argparse.ArgumentParser()
+    group = parser.add_argument_group('Configuration Parameters',
+                                      'With the parameters specified bellow, '
+                                      'the configuration values from the config file can be overwritten.')
+    for param in parameters:
+        group.add_argument(f'--{param}', required=False)
+    args, unknown = parser.parse_known_args()
+
+    # find passed arguments and fill it into the dict structure
+    infinite_dict = InfiniteDict()
+    for param in parameters:
+        value = getattr(args, parameters[0])
+        if value:
+            infinite_dict.update(param.split('.'), value)
+
+        return infinite_dict
 
 
 class BaseConfig(BaseSettings):
@@ -15,7 +42,6 @@ class BaseConfig(BaseSettings):
         :return: instance of config_class with all values added from the config file
         """
         config_content = source_backend.parse_file(path)
-        from confme.argument_overwrite import overwrite_config
-        overwrite_config(cls)
+        config_content.update(argument_overwrite(cls))
 
         return cls.parse_obj(config_content)

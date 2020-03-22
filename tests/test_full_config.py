@@ -1,3 +1,4 @@
+import logging
 import os
 import uuid
 from enum import Enum
@@ -16,8 +17,10 @@ class AnyEnum(Enum):
 
 
 class ChildNode(BaseConfig):
-    testStr: str
+    # das ist ein kommentar für den string
+    testStr: str  # das ist ein anderer kommentar für den string
     testInt: int
+    # das ist ein kommentar for floats
     testFloat: float
     testOptional: Optional[float]
     password: str = Secret('highSecure')
@@ -51,6 +54,7 @@ def test_load_config(config_yaml: str):
     os.environ['highSecure'] = 'superSecureSecret'
 
     root_config = RootConfig.load(config_yaml)
+    logging.info(f'Config loaded: {root_config.dict()}')
 
     assert root_config.rootValue == 1
     assert root_config.rangeValue == 5
