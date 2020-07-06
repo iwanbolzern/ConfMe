@@ -2,15 +2,11 @@ import logging
 import os
 import sys
 import uuid
-from enum import Enum
 from os import path
-from typing import Optional
 
 import pytest
 
-from confme import BaseConfig
-from confme.annotation import Secret, ClosedRange
-from tests.config_model import RootConfig, AnyEnum
+from tests.unit.config_model import RootConfig, AnyEnum
 
 
 @pytest.fixture

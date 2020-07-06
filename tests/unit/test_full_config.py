@@ -5,7 +5,7 @@ from os import path
 
 import pytest
 
-from tests.config_model import RootConfig, AnyEnum
+from tests.unit.config_model import RootConfig, AnyEnum
 
 
 @pytest.fixture

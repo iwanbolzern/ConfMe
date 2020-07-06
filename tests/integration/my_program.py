@@ -1,7 +1,5 @@
-import sys
-
 from confme import BaseConfig
-
+from os import path
 
 class DatabaseConfig(BaseConfig):
     host: str
@@ -14,7 +12,9 @@ class MyConfig(BaseConfig):
     database: DatabaseConfig
 
 
-config = MyConfig.load('test_config.yaml')
+dir_path = path.dirname(path.realpath(__file__))
+
+config = MyConfig.load(path.join(dir_path, 'test_config.yaml'))
 print(config)
 
 

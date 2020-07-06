@@ -30,3 +30,6 @@ jobs:
       run: |
         ls -l
         pytest
+    - name: Integration tests
+        run: |
+          bash tests/integration/integration.sh
