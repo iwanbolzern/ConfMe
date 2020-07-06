@@ -1,3 +1,4 @@
+import collections.abc
 from collections import defaultdict
 from typing import Any, List, MutableMapping, Dict
 
@@ -13,12 +14,22 @@ def flatten(d: Dict, parent_key='', sep='.'):
     return items
 
 
+def recursive_update(d, u):
+    for k, v in u.items():
+        if isinstance(v, collections.abc.Mapping):
+            d[k] = recursive_update(d.get(k, {}), v)
+        else:
+            d[k] = v
+    return d
+
+
 class InfiniteDict(defaultdict):
     def __init__(self):
         defaultdict.__init__(self, self.__class__)
 
     def expand(self, levels: List[str], value: Any):
-        if len(levels) <= 0:
-            return value
+        current = self
+        for level in levels[:-1]:
+            current = current[level]
 
-        return self.expand(self[levels[0]], levels[1:], value)
+        current[levels[-1]] = value

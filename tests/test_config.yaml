@@ -1,0 +1,5 @@
+name: "Database Application"
+database:
+    host: "localhost"
+    port: 5000
+    user: "any-db-user"

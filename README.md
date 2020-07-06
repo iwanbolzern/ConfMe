@@ -36,7 +36,7 @@ class DatabaseConfig(BaseConfig):
     user: str
 
 class MyConfig(BaseConfig):
-    name: int
+    name: str
     database: DatabaseConfig
 ```
 Create a configuration yaml file with the same structure as your configuration classes have:
