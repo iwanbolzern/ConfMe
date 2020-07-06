@@ -1,10 +1,15 @@
 import logging
 import os
+import sys
 import uuid
+from enum import Enum
 from os import path
+from typing import Optional
 
 import pytest
 
+from confme import BaseConfig
+from confme.annotation import Secret, ClosedRange
 from tests.config_model import RootConfig, AnyEnum
 
 
@@ -27,15 +32,17 @@ def config_yaml(tmp_path: str):
 
 def test_load_config(config_yaml: str):
     os.environ['highSecure'] = 'superSecureSecret'
+    sys.argv += ['--rootValue', '2']
+    sys.argv += ['--childNode.anyEnum', 'value1']
 
     root_config = RootConfig.load(config_yaml)
     logging.info(f'Config loaded: {root_config.dict()}')
 
-    assert root_config.rootValue == 1
+    assert root_config.rootValue == 2
     assert root_config.rangeValue == 5
     assert root_config.childNode.testStr == 'Das ist ein test'
     assert root_config.childNode.testInt == 42
     assert root_config.childNode.testFloat == 42.42
     assert root_config.childNode.testOptional is None
     assert root_config.childNode.password == os.environ['highSecure']
-    assert root_config.childNode.anyEnum == AnyEnum.V2
+    assert root_config.childNode.anyEnum == AnyEnum.V1
