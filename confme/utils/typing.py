@@ -16,5 +16,5 @@ def _create_dict(schema_head, definitions):
 
 def get_schema(config_cls):
     schema = model_schema(config_cls)
-    definitions = schema['definitions']
+    definitions = schema['definitions'] if 'definitions' in schema else {}
     return _create_dict(schema, definitions)

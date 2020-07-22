@@ -5,7 +5,7 @@ from os import path
 
 import pytest
 
-from tests.unit.config_model import RootConfig, AnyEnum
+from tests.unit.config_model import RootConfig, AnyEnum, FlatConfig
 
 
 @pytest.fixture
@@ -17,6 +17,18 @@ def config_yaml(tmp_path: str):
                      '  testInt: 42\n' \
                      '  testFloat: 42.42\n' \
                      '  anyEnum: value2'
+
+    config_path = path.join(tmp_path, f'{uuid.uuid4()}.yaml')
+    with open(config_path, 'w') as config_file:
+        config_file.write(config_content)
+
+    return config_path
+
+
+@pytest.fixture
+def flat_config_yaml(tmp_path: str):
+    config_content = 'oneValue: 1\n' \
+                     'twoValue: "Das ist ein test"'
 
     config_path = path.join(tmp_path, f'{uuid.uuid4()}.yaml')
     with open(config_path, 'w') as config_file:
@@ -39,3 +51,12 @@ def test_load_config(config_yaml: str):
     assert root_config.childNode.testOptional is None
     assert root_config.childNode.password == os.environ['highSecure']
     assert root_config.childNode.anyEnum == AnyEnum.V2
+
+
+def test_load_flat_config(flat_config_yaml: str):
+
+    flat_config = FlatConfig.load(flat_config_yaml)
+    logging.info(f'Config loaded: {flat_config.dict()}')
+
+    assert flat_config.oneValue == 1
+    assert flat_config.twoValue == 'Das ist ein test'

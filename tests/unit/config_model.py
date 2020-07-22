@@ -25,3 +25,8 @@ class RootConfig(BaseConfig):
     rootValue: int
     rangeValue: int = ClosedRange(4, 6)
     childNode: ChildNode
+
+
+class FlatConfig(BaseConfig):
+    oneValue: int
+    twoValue: str
