@@ -1,17 +1,21 @@
 import collections.abc
 from collections import defaultdict
-from typing import Any, List, MutableMapping, Dict
+from typing import Any, List, MutableMapping, Dict, Tuple
 
 
-def flatten(d: Dict, parent_key='', sep='.'):
+def flatten(d: Dict, parent_key='', sep='.') -> Tuple[List, List]:
     items = []
+    values = []
     for k, v in d.items():
         new_key = parent_key + sep + k if parent_key else k
         if isinstance(v, MutableMapping):
-            items.extend(flatten(v, new_key, sep=sep))
+            inner_items, inner_values = flatten(v, new_key, sep=sep)
+            items.extend(inner_items)
+            values.extend(inner_values)
         else:
             items.append(new_key)
-    return items
+            values.append(v)
+    return items, values
 
 
 def recursive_update(d, u):
