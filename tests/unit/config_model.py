@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
 
-from confme import BaseConfig
+from confme import BaseConfig, GlobalConfig
 from confme.annotation import Secret, ClosedRange
 
 
@@ -22,6 +22,12 @@ class ChildNode(BaseConfig):
 
 
 class RootConfig(BaseConfig):
+    rootValue: int
+    rangeValue: int = ClosedRange(4, 6)
+    childNode: ChildNode
+
+
+class GlobalRootConfig(GlobalConfig):
     rootValue: int
     rangeValue: int = ClosedRange(4, 6)
     childNode: ChildNode

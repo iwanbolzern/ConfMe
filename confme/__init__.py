@@ -1,13 +1,15 @@
 """ConfigurationMadeEasy package exports"""
 import argparse
-from typing import Any, Tuple, List
-
-from pydantic import BaseSettings
+import logging
+import os
+from pathlib import Path
+from typing import Any, Tuple, List, Dict, Union
 
 from confme import source_backend
 from confme.utils.base_exception import ConfmeException
-from confme.utils.typing import get_schema
 from confme.utils.dict_util import flatten, InfiniteDict, recursive_update
+from confme.utils.typing import get_schema
+from pydantic import BaseSettings
 
 
 def argument_overwrite(config_cls):
@@ -37,13 +39,13 @@ def argument_overwrite(config_cls):
 class BaseConfig(BaseSettings):
 
     @classmethod
-    def load(cls, path: str) -> 'BaseConfig':
+    def load(cls, path: Union[Path, str]) -> 'BaseConfig':
         """Load your configuration file into your config class structure.
         :param config_class: Root class to map the configuration file to
         :param path: path to configuration file
         :return: instance of config_class with all values added from the config file
         """
-        config_content = source_backend.parse_file(path)
+        config_content = source_backend.parse_file(Path(path))
         config_content = recursive_update(config_content, argument_overwrite(cls))
 
         return cls.parse_obj(config_content)
@@ -106,4 +108,55 @@ class BaseConfig(BaseSettings):
         """
         keys, values = flatten(self.dict())
         return list(zip(keys, values))
+
+
+class GlobalConfig(BaseConfig):
+    _KEY_LOOKUP = ['env', 'environment', 'environ', 'stage']
+    _config_path: Path = None
+    _cache: Dict[str, BaseConfig] = {}
+
+    @classmethod
+    def register_folder(cls, config_folder: Path):
+        cls._config_path = config_folder
+
+    @classmethod
+    def get(cls) -> 'BaseConfig':
+        env = cls._get_current_env()
+        if env not in cls._cache:
+            cls._cache[env] = cls._load_file(env)
+
+        return cls._cache[env]
+
+    @classmethod
+    def _load_file(cls, environment: str):
+        files = Path(cls._config_path).glob(pattern='*')
+        selected_files = [f for f in files if environment in f.name]
+
+        if len(selected_files) <= 0:
+            raise Exception(f'No configuration found for environment {environment} in '
+                            f'files {files}')
+        elif len(selected_files) > 1:
+            logging.warning(f'More than one file found matching environment {environment} in'
+                            f'files {files}. Using file {selected_files[0]}')
+            file = selected_files[0]
+        else:
+            file = selected_files[0]
+
+        return cls.load(file)
+
+    @classmethod
+    def _get_current_env(cls) -> str:
+        keys = [key for key in os.environ.keys() if key.lower() in cls._KEY_LOOKUP]
+
+        if len(keys) <= 0:
+            raise Exception(f"You're using the register_folder / get combination one of the "
+                            f"following environment variables need to be set: ENV, ENVIRONMENT,"
+                            f"ENVIRON, env, environment, environ")
+        elif len(keys) > 1:
+            logging.warning(f'More than one environment variable set using the value of {keys[0]}')
+            key = keys[0]
+        else:
+            key = keys[0]
+
+        return os.environ[key].lower()
 
