@@ -3,7 +3,7 @@ import argparse
 import logging
 import os
 from pathlib import Path
-from typing import Any, Tuple, List, Dict, Union
+from typing import Any, Tuple, List, Dict, Union, TypeVar
 
 from confme import source_backend
 from confme.utils.base_exception import ConfmeException
@@ -110,17 +110,20 @@ class BaseConfig(BaseSettings):
         return list(zip(keys, values))
 
 
+T = TypeVar('T', bound=BaseConfig)
+
+
 class GlobalConfig(BaseConfig):
     _KEY_LOOKUP = ['env', 'environment', 'environ', 'stage']
     _config_path: Path = None
-    _cache: Dict[str, BaseConfig] = {}
+    _cache: Dict[str, T] = {}
 
     @classmethod
     def register_folder(cls, config_folder: Path):
         cls._config_path = config_folder
 
     @classmethod
-    def get(cls) -> 'BaseConfig':
+    def get(cls) -> T:
         env = cls._get_current_env()
         if env not in cls._cache:
             cls._cache[env] = cls._load_file(env)
@@ -128,7 +131,7 @@ class GlobalConfig(BaseConfig):
         return cls._cache[env]
 
     @classmethod
-    def _load_file(cls, environment: str):
+    def _load_file(cls, environment: str) -> T:
         files = Path(cls._config_path).glob(pattern='*')
         selected_files = [f for f in files if environment in f.name]
 
