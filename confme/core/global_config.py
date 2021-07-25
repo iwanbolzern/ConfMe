@@ -16,6 +16,7 @@ class GlobalConfig(BaseConfig):
     @classmethod
     def register_folder(cls, config_folder: Path):
         cls._config_path = config_folder
+        cls._cache = {}
 
     @classmethod
     def get(cls) -> T:
