@@ -1,6 +1,8 @@
+import logging
 from pathlib import Path
-from typing import Union, Any, List, Tuple
+from typing import Union, Any, List, Tuple, Callable
 
+from tabulate import tabulate
 from pydantic import BaseSettings
 
 from confme import source_backend
@@ -81,3 +83,11 @@ class BaseConfig(BaseSettings):
         """
         keys, values = flatten(self.dict())
         return list(zip(keys, values))
+
+    def log_config(self, print_fn: Callable[[str], None] = logging.info):
+        """Prints/logs the configuration in a flat format.
+        :param print_fn: print callable to overwrite can be used e.g. with log_config(print_fn=print)
+        """
+        flat_config = self.get_flat_repr()
+        str_config = tabulate(flat_config, headers=['Key', 'Value'], tablefmt="github")
+        print_fn(str_config)
