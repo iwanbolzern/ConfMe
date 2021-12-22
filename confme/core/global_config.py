@@ -5,7 +5,7 @@ from typing import Dict, TypeVar
 
 from confme import BaseConfig
 
-T = TypeVar('T', bound=BaseConfig)
+T = TypeVar('T', bound='BaseConfig')
 
 
 class GlobalConfig(BaseConfig):

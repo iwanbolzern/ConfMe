@@ -42,3 +42,6 @@ def test_load_config(config_yaml: str):
     assert root_config.childNode.testOptional is None
     assert root_config.childNode.password == os.environ['highSecure']
     assert root_config.childNode.anyEnum == AnyEnum.V1
+
+    for v in ['--rootValue', '2', '--childNode.anyEnum', 'value1']:
+        sys.argv.remove(v)

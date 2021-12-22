@@ -11,7 +11,6 @@ ConfMe is a simple to use, production ready application configuration management
 ConfMe makes all these features possible with just a few type annotations on plain Python objects.
 
 ## Installation
-
 ConfMe can be installed from the official python package repository [pypi](https://pypi.org/project/confme/)
 
 ```
@@ -31,7 +30,6 @@ poetry add confme
 ```
 
 ## Basic Usage of confme
-
 Define your config structure as plain python objects with type annotations:
 
 ```python
@@ -69,7 +67,6 @@ print(f'Using database connection {my_config.database.host} '
 In the background the yaml file is parsed and mapped to the defined object structure. While mapping the values to object properties, type checks are performed. If a value is not available or is not of the correct type, an error is generated already when the configuration is loaded.
 
 ## Supported Annotations
-
 ConfMe is based on pydantic and supports all annotations provided by pydantic. The most important annotations are listed and explain bellow. For the whole list, please checkout [Field Types](https://pydantic-docs.helpmanual.io/usage/types/):
 - str
 - int
@@ -82,7 +79,6 @@ ConfMe is based on pydantic and supports all annotations provided by pydantic. T
 - [Enum](#enum)
 
 ### Secret
-
 With the Secret annotation you can inject secrets from environment variables directly into your configuration structure. This is especially handy when you're deploying applications by using docker. Therefore, let's extend the previous example with a Secret annotation:
 
 ```python
@@ -142,8 +138,46 @@ class DatabaseConfig(BaseConfig):
     connection_type: DatabaseConnection
 ```
 
-## Overwrite Parameters from Command Line
+## Switching configuration based on Environment
+A very common situation is that configurations must be changed based on the execution environment (dev, test, prod). This can be accomplished 
+by registering a folder with one .yaml file per environment and seting the `ENV` environment variable to the value you need. An example could look 
+like this:  
 
+Let's assume we have three environments (dev, test, prod) and one configuration file per environment in the following folder structure:
+```
+project
+│
+└───config
+│   │   my_prod_config.yaml
+│   │   my_test_config.yaml
+│   │   my_dev_config.yaml
+│   
+└───src
+│   │   app.py
+│   │   my_config.py
+```
+The definition of `my_config.py` is equivalent to the one used in the basic introduction section and `app.py` uses our configuration the 
+following way:
+```python
+# we register the folder where ConfME can find the configuration files
+MyConfig.register_folder(Path(__file__).parent / '../config')
+...
+
+# we access the instance of the corresponding configuration file anywhere in our project. 
+my_config = MyConfig.get()
+print(f'Using database connection {my_config.database.host} '
+      f'on port {my_config.database.port}')
+```
+If now one of the following environment variables (precedence in descending order): `['env', 'environment', 'environ', 'stage']` is 
+set e.g. `export ENV=prod` it will load the configuration file with `prod` in its name.
+
+## Parameter overwrite
+In addition to loading configuration parameters from the configuration file, they can be passed/overwritten from the command line or environment variables. Thereby, the following precedences apply (lower number means higher precedence):
+1. **Command Line Arguments**: Check if parameter is set as command line argument. If not go one line done...
+2. **Environment Variables**: Check if parameter is set as environment variable. If not go one line done...
+3. **Configuration File**: If value was not found in one of the previous sources, it will check in the configuration file.
+
+### Overwrite Parameters from Command Line
 Especially in the Data Science and Machine Learning area it is useful to pass certain parameters for experimental purposes as command line arguments. Therefore, all properties defined in the configuration classes are automatically offered as command line arguments in the following format:
 
 **my_program.py:**
@@ -179,6 +213,13 @@ Configuration Parameters:
   --database.host DATABASE.HOST
   --database.port DATABASE.PORT
   --database.user DATABASE.USER
+```
+
+### Overwrite Parameters with Environment Variables
+Likewise to overwriting parameters from the commandline you can also overwrite by passing environment variables. Therefore, simply set the environment variable in the same format as it would be passed as command line arguments and run your application:
+```shell
+$ export database.host=localhost
+$ python my_programm.py
 ```
 
 ## LICENSE
