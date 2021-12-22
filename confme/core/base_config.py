@@ -2,11 +2,12 @@ import logging
 from pathlib import Path
 from typing import Union, Any, List, Tuple, Callable
 
-from tabulate import tabulate
 from pydantic import BaseSettings
+from tabulate import tabulate
 
 from confme import source_backend
 from confme.core.argument_overwrite import argument_overwrite
+from confme.core.env_overwrite import env_overwrite
 from confme.utils.base_exception import ConfmeException
 from confme.utils.dict_util import recursive_update, flatten
 
@@ -21,6 +22,7 @@ class BaseConfig(BaseSettings):
         :return: instance of config_class with all values added from the config file
         """
         config_content = source_backend.parse_file(Path(path))
+        config_content = recursive_update(config_content, env_overwrite(cls))
         config_content = recursive_update(config_content, argument_overwrite(cls))
 
         return cls.parse_obj(config_content)
