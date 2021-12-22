@@ -35,6 +35,7 @@ def test_environment_overwrite_config(config_yaml: str):
     sys.argv += ['--rootValue', '2']
     sys.argv += ['--childNode.anyEnum', 'value1']
 
+    print(os.environ['childNode.TESTFLOAT'])
     root_config = RootConfig.load(config_yaml)
     logging.info(f'Config loaded: {root_config.dict()}')
 
