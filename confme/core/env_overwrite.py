@@ -11,17 +11,15 @@ def env_overwrite(config_cls: ModelMetaclass):
     config_dict = get_schema(config_cls)
     parameters, _ = flatten(config_dict)
 
-    # make case insensitive
-    original = [(p_org, p_org) for p_org in parameters]
-    lower = [(p_org.lower(), p_org) for p_org in parameters]
-    upper = [(p_org.upper(), p_org) for p_org in parameters]
-    parameters = original + lower + upper
+    # make env variables case insensitive
+    keys, values = zip(*os.environ.items())
+    keys = [k.casefold() for k in keys]
 
     # find passed arguments and fill it into the dict structure
     infinite_dict = InfiniteDict()
-    for p, p_org in parameters:
-        if p in os.environ:
-            value = os.environ[p]
-            infinite_dict.expand(p_org.split('.'), value)
+    for p in parameters:
+        if p.casefold() in keys:
+            i = keys.index(p.casefold())
+            infinite_dict.expand(p.split('.'), values[i])
 
     return infinite_dict
