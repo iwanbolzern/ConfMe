@@ -26,8 +26,12 @@ def config_yaml(tmp_path: str):
     return config_path
 
 
-def test_load_config(config_yaml: str):
+def test_environment_overwrite_config(config_yaml: str):
     os.environ['highSecure'] = 'superSecureSecret'
+    os.environ['childNode.anyEnum'] = 'value2'
+    os.environ['childNode.testInt'] = '22'
+    os.environ['childNode.TESTFLOAT'] = '22.22'
+
     sys.argv += ['--rootValue', '2']
     sys.argv += ['--childNode.anyEnum', 'value1']
 
@@ -37,11 +41,16 @@ def test_load_config(config_yaml: str):
     assert root_config.rootValue == 2
     assert root_config.rangeValue == 5
     assert root_config.childNode.testStr == 'Das ist ein test'
-    assert root_config.childNode.testInt == 42
-    assert root_config.childNode.testFloat == 42.42
+    assert root_config.childNode.testInt == 22
+    assert root_config.childNode.testFloat == 22.22
     assert root_config.childNode.testOptional is None
     assert root_config.childNode.password == os.environ['highSecure']
-    assert root_config.childNode.anyEnum == AnyEnum.V1
+    assert root_config.childNode.anyEnum == AnyEnum.V1  # we expect arguments take precedence over env variables
+
+    del os.environ['highSecure']
+    del os.environ['childNode.anyEnum']
+    del os.environ['childNode.testInt']
+    del os.environ['childNode.TESTFLOAT']
 
     for v in ['--rootValue', '2', '--childNode.anyEnum', 'value1']:
         sys.argv.remove(v)
