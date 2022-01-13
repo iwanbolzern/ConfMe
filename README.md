@@ -197,22 +197,21 @@ class MyConfig(BaseConfig):
 config = MyConfig.load('test.yaml')
 ```
 
-When you now start your program from the command line with the ```--help``` argument, you get the full list of all configuration options:
-
+When you now start your program from the command line with the ```++help``` argument, you get the full list of all configuration options. **CAVEAT!** In order to not interfere with other cli tools, the prefix - was changed to +:
 ```shell
 $ python my_program.py --help
-usage: my_program.py [-h] [--name NAME] [--database.host DATABASE.HOST] [--database.port DATABASE.PORT] [--database.user DATABASE.USER]
+usage: my_program.py [+h] [++name NAME] [++database.host DATABASE.HOST] [++database.port DATABASE.PORT] [++database.user DATABASE.USER]
 
 optional arguments:
-  -h, --help            show this help message and exit
+  +h, ++help            show this help message and exit
 
 Configuration Parameters:
   With the parameters specified bellow, the configuration values from the config file can be overwritten.
 
-  --name NAME
-  --database.host DATABASE.HOST
-  --database.port DATABASE.PORT
-  --database.user DATABASE.USER
+  ++name NAME
+  ++database.host DATABASE.HOST
+  ++database.port DATABASE.PORT
+  ++database.user DATABASE.USER
 ```
 
 ### Overwrite Parameters with Environment Variables
