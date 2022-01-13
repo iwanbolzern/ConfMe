@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "confme"
-version = "1.0.2"
+version = "1.0.3"
 description = "Easy configuration management in python"
 authors = ["Iwan Silvan Bolzern <iwan.bolzern@roche.com>"]
 license = "LICENSE"
