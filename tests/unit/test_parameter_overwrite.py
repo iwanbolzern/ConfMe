@@ -28,8 +28,8 @@ def config_yaml(tmp_path: str):
 
 def test_load_config(config_yaml: str):
     os.environ['highSecure'] = 'superSecureSecret'
-    sys.argv += ['--rootValue', '2']
-    sys.argv += ['--childNode.anyEnum', 'value1']
+    sys.argv += ['++rootValue', '2']
+    sys.argv += ['++childNode.anyEnum', 'value1']
 
     root_config = RootConfig.load(config_yaml)
     logging.info(f'Config loaded: {root_config.dict()}')
@@ -43,5 +43,5 @@ def test_load_config(config_yaml: str):
     assert root_config.childNode.password == os.environ['highSecure']
     assert root_config.childNode.anyEnum == AnyEnum.V1
 
-    for v in ['--rootValue', '2', '--childNode.anyEnum', 'value1']:
+    for v in ['++rootValue', '2', '++childNode.anyEnum', 'value1']:
         sys.argv.remove(v)

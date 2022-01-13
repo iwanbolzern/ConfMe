@@ -32,8 +32,8 @@ def test_environment_overwrite_config(config_yaml: str):
     os.environ['childNode.testInt'] = '22'
     os.environ['childNode.TESTFLOAT'] = '22.22'
 
-    sys.argv += ['--rootValue', '2']
-    sys.argv += ['--childNode.anyEnum', 'value1']
+    sys.argv += ['++rootValue', '2']
+    sys.argv += ['++childNode.anyEnum', 'value1']
 
     root_config = RootConfig.load(config_yaml)
     logging.info(f'Config loaded: {root_config.dict()}')
@@ -52,5 +52,5 @@ def test_environment_overwrite_config(config_yaml: str):
     del os.environ['childNode.testInt']
     del os.environ['childNode.TESTFLOAT']
 
-    for v in ['--rootValue', '2', '--childNode.anyEnum', 'value1']:
+    for v in ['++rootValue', '2', '++childNode.anyEnum', 'value1']:
         sys.argv.remove(v)
