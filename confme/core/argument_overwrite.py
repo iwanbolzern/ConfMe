@@ -12,7 +12,8 @@ def argument_overwrite(config_cls: ModelMetaclass):
     parameters, _ = flatten(config_dict)
 
     # get arguments from command line
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--help-config', action='help', help='Show Configuration parameters')
     group = parser.add_argument_group('Configuration Parameters',
                                       'With the parameters specified bellow, '
                                       'the configuration values from the config file can be overwritten.')
