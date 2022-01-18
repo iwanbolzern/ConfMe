@@ -34,6 +34,13 @@ class BaseConfig(BaseSettings):
         return cls.parse_obj(config_content)
 
     @classmethod
+    def load_from_dict(cls, config_content: Dict) -> 'BaseConfig':
+        config_content = recursive_update(config_content, env_overwrite(cls))
+        config_content = recursive_update(config_content, argument_overwrite(cls))
+
+        return cls.parse_obj(config_content)
+
+    @classmethod
     def register_folder(cls, config_folder: Path):
         """Register a folder where configuration files are drawn based on the environment.
         :param config_folder: Path to the folder with configuration files per environment

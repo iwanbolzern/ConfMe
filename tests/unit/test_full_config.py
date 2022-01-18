@@ -2,6 +2,7 @@ import logging
 import os
 import uuid
 from os import path
+from typing import Dict
 
 import pytest
 
@@ -24,6 +25,18 @@ def config_yaml(tmp_path: str):
         config_file.write(config_content)
 
     return config_path
+
+
+@pytest.fixture
+def config_dict(tmp_path: str):
+    return {'rootValue': 1,
+            'rangeValue': 5,
+            'childNode': {
+                'testStr': 'This is a test',
+                'testInt': 42,
+                'testFloat': 42.42,
+                'anyEnum': 'value2'
+            }}
 
 
 @pytest.fixture
@@ -60,6 +73,22 @@ def test_load_flat_config(flat_config_yaml: str):
 
     assert flat_config.oneValue == 1
     assert flat_config.twoValue == 'This is a test'
+
+
+def test_load_conifg_from_dict(config_dict: Dict):
+    os.environ['highSecure'] = 'superSecureSecret'
+
+    root_config = RootConfig.load_from_dict(config_dict)
+    logging.info(f'Config loaded: {root_config.dict()}')
+
+    assert root_config.rootValue == 1
+    assert root_config.rangeValue == 5
+    assert root_config.childNode.testStr == 'This is a test'
+    assert root_config.childNode.testInt == 42
+    assert root_config.childNode.testFloat == 42.42
+    assert root_config.childNode.testOptional is None
+    assert root_config.childNode.password == os.environ['highSecure']
+    assert root_config.childNode.anyEnum == AnyEnum.V2
 
 
 def test_update_by_str(config_yaml: str):
