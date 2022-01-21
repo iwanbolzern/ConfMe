@@ -58,7 +58,10 @@ def test_load_global_config(prod_config_yaml: str, test_config_yaml: str):
 def test_load_config_by_env(prod_config_yaml: str, test_config_yaml: str):
     os.environ['highSecure'] = 'superSecureSecret'
 
-    RootConfig.register_folder(Path(prod_config_yaml).parent)
+    RootConfig.register_folder(Path(prod_config_yaml).parent, default_env='prod')
+
+    root_config = RootConfig.get()
+    assert root_config.childNode.testStr == 'prod-env'
 
     os.environ['ENV'] = 'test'
     root_config = RootConfig.get()

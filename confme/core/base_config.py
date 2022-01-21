@@ -18,6 +18,7 @@ T = TypeVar('T', bound='BaseConfig')
 class BaseConfig(BaseSettings):
     _KEY_LOOKUP = ['env', 'environment', 'environ', 'stage']
     _config_path: Path = None
+    _default_env: str = None
     _cache: Dict[str, T] = {}
 
     @classmethod
@@ -41,11 +42,13 @@ class BaseConfig(BaseSettings):
         return cls.parse_obj(config_content)
 
     @classmethod
-    def register_folder(cls, config_folder: Path):
+    def register_folder(cls, config_folder: Path, default_env: str = None):
         """Register a folder where configuration files are drawn based on the environment.
         :param config_folder: Path to the folder with configuration files per environment
+        :param default_env: Default environment that should be used if none is specified via environment variable
         """
         cls._config_path = config_folder
+        cls._default_env = default_env
         cls._cache = {}
 
     @classmethod
@@ -81,10 +84,12 @@ class BaseConfig(BaseSettings):
     def _get_current_env(cls) -> str:
         keys = [key for key in os.environ.keys() if key.lower() in cls._KEY_LOOKUP]
 
-        if len(keys) <= 0:
+        if len(keys) <= 0 and cls._default_env is None:
             raise Exception(f"You're using the register_folder / get combination one of the "
                             f"following environment variables need to be set: ENV, ENVIRONMENT,"
                             f"ENVIRON, env, environment, environ")
+        elif len(keys) <= 0 and cls._default_env is not None:
+            return cls._default_env
         elif len(keys) > 1:
             logging.warning(f'More than one environment variable set using the value of {keys[0]}')
             key = keys[0]
