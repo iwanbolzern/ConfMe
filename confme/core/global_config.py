@@ -4,10 +4,12 @@ from pathlib import Path
 from typing import Dict, TypeVar
 
 from confme import BaseConfig
+from confme.utils.deprecation import deprecated_cls
 
 T = TypeVar('T', bound='BaseConfig')
 
-
+@deprecated_cls(comment='GlobalConfig will be removed in next major release! Please use BaseConfig instead, all '
+                        'functionalities were transfered into it already.')
 class GlobalConfig(BaseConfig):
     _KEY_LOOKUP = ['env', 'environment', 'environ', 'stage']
     _config_path: Path = None
