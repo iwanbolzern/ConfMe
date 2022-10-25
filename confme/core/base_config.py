@@ -1,13 +1,16 @@
+import io
 import logging
 import os
 from pathlib import Path
 from typing import Union, Any, List, Tuple, Callable, TypeVar, Dict
 
+import yaml
 from pydantic import BaseSettings
 from tabulate import tabulate
 
 from confme import source_backend
 from confme.core.argument_overwrite import argument_overwrite
+from confme.core.default_gen import Generator
 from confme.core.env_overwrite import env_overwrite
 from confme.utils.base_exception import ConfmeException
 from confme.utils.dict_util import recursive_update, flatten
@@ -164,3 +167,18 @@ class BaseConfig(BaseSettings):
         flat_config = self.get_flat_repr()
         str_config = tabulate(flat_config, headers=['Key', 'Value'], tablefmt="github")
         print_fn(str_config)
+
+    @classmethod
+    def generate_example(cls, print_fn: Callable[[str], None] = print):
+        # generate config
+        generator = Generator()
+        example = generator.generate(cls)
+
+        # convert to yaml
+        stream = io.StringIO()
+        yaml.dump(example, stream=stream)
+        stream.seek(0)
+
+        # print
+        print_fn(stream.read())
+

@@ -125,3 +125,26 @@ def test_get_flat_rep(config_yaml: str):
     assert flat_repr[5] == ('childNode.testOptional', None)
     assert flat_repr[6] == ('childNode.password', os.environ['highSecure'])
     assert flat_repr[7] == ('childNode.anyEnum', AnyEnum.V2)
+
+
+def test_generate_example():
+    expected_output = 'rootValue: 42\n' \
+                       'rangeValue: 42\n' \
+                       'childNode:\n' \
+                       '  testStr: "bla"\n' \
+                       '  testInt: 42\n' \
+                       '  testFloat: 42.42\n' \
+                       '  testOptional: 42.42\n' \
+                       '  password: "bla"\n' \
+                       '  anyEnum: value1'
+    output = None
+    def _print(out: str):
+        nonlocal output
+        output = out
+
+    RootConfig.generate_example(_print)
+
+    assert output == expected_output
+
+
+
