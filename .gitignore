@@ -1,6 +1,3 @@
-# exlude poetry lock
-poetry.lock
-
 # IDE
 .idea
 

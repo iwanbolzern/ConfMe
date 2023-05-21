@@ -42,13 +42,15 @@ class BaseConfig(BaseSettings):
         return cls.parse_obj(config_content)
 
     @classmethod
-    def register_folder(cls, config_folder: Path, default_env: str = None):
+    def register_folder(cls, config_folder: Path, default_env: str = None, strict: bool = False):
         """Register a folder where configuration files are drawn based on the environment.
         :param config_folder: Path to the folder with configuration files per environment
         :param default_env: Default environment that should be used if none is specified via environment variable
+        :param strict: If True, an exception is raised if no configuration file is found that exactly matches env name.
         """
         cls._config_path = config_folder
         cls._default_env = default_env
+        cls._strict = strict
         cls._cache = {}
 
     @classmethod
@@ -66,11 +68,14 @@ class BaseConfig(BaseSettings):
     @classmethod
     def _load_file(cls, environment: str) -> T:
         files = Path(cls._config_path).glob(pattern='*')
-        selected_files = [f for f in files if environment in f.name]
+        if cls._strict:
+            selected_files = [f for f in files if f.name == environment]
+        else:
+            selected_files = [f for f in files if environment in f.name]
 
         if len(selected_files) <= 0:
-            raise Exception(f'No configuration found for environment {environment} in '
-                            f'files {files}')
+            raise ConfmeException(f'No configuration found for environment {environment} in '
+                                  f'files {files}')
         elif len(selected_files) > 1:
             logging.warning(f'More than one file found matching environment {environment} in'
                             f'files {files}. Using file {selected_files[0]}')

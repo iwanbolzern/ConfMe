@@ -1,6 +1,7 @@
 from confme import BaseConfig
 from os import path
 
+
 class DatabaseConfig(BaseConfig):
     host: str
     port: int

@@ -4,10 +4,14 @@ from pathlib import Path
 from typing import Dict, TypeVar
 
 from confme import BaseConfig
+from confme.utils.deprecated import deprecated
+from confme.utils.base_exception import ConfmeException
 
 T = TypeVar('T', bound='BaseConfig')
 
 
+@deprecated(reason='GlobalConfig is not maintained anymore and all functionality is transferred to BaseConfig. '
+                   'Use BaseConfig instead.')
 class GlobalConfig(BaseConfig):
     _KEY_LOOKUP = ['env', 'environment', 'environ', 'stage']
     _config_path: Path = None
@@ -32,8 +36,8 @@ class GlobalConfig(BaseConfig):
         selected_files = [f for f in files if environment in f.name]
 
         if len(selected_files) <= 0:
-            raise Exception(f'No configuration found for environment {environment} in '
-                            f'files {files}')
+            raise ConfmeException(f'No configuration found for environment {environment} in '
+                                  f'files {files}')
         elif len(selected_files) > 1:
             logging.warning(f'More than one file found matching environment {environment} in'
                             f'files {files}. Using file {selected_files[0]}')
