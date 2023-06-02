@@ -69,7 +69,7 @@ class BaseConfig(BaseSettings):
     def _load_file(cls, environment: str) -> T:
         files = Path(cls._config_path).glob(pattern='*')
         if cls._strict:
-            selected_files = [f for f in files if f.name == environment]
+            selected_files = [f for f in files if f.name == environment or f.stem == environment]
         else:
             selected_files = [f for f in files if environment in f.name]
 
