@@ -221,6 +221,30 @@ $ export database.host=localhost
 $ python my_programm.py
 ```
 
+## Breaking Changes in v2
+Pydantic is the underlying library powering ConfMe and with the update to pydantic v2 some breaking changes where
+introduced. However, we tried our best to minimize the impact on your project and only passed a selection of changes
+to you. Please find these documented bellow:
+
+### Required, optional and nullable fields
+Pydantic V2 changes some of the logic for specifying whether a field annotated as Optional is required (i.e., has no 
+default value) or not (i.e., has a default value of None or any other value of the corresponding type), and now more 
+closely matches the behavior of dataclasses. Similarly, fields annotated as Any no longer have a default value of None.
+
+The following table describes the behavior of field annotations in V2:
+
+| State                                                 | Field Definition            |
+|-------------------------------------------------------|-----------------------------|
+| Required, cannot be `None`                            | `f1: str`                   |
+| Not required, cannot be `None`, is `'abc'` by default | `f3: str = 'abc'`           |
+| Required, can be `None`                               | `f2: Optional[str]`         |
+| Not required, can be `None`, is `None` by default     | `f3: Optional[str] = None`  |
+| Not required, can be `None`, is `'abc'` by default    | `f3: Optional[str] = 'abc'` |
+| Not required, cannot be `None`                        | `f4: str = 'Foobar'`        |
+| Required, can be any type (including `None`)          | `f5: Any`                   |
+| Not required, can be any type (including `None`)      | `f6: Any = None`            |
+
+
 ## LICENSE
 
 ConfMe is released under the [MIT](LICENSE) license.
