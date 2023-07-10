@@ -16,10 +16,10 @@ T = TypeVar('T', bound='BaseConfig')
 
 
 class BaseConfig(BaseModel):
-    _KEY_LOOKUP = ['env', 'environment', 'environ', 'stage']
-    _config_path: Path = None
-    _default_env: str = None
-    _cache: Dict[str, T] = {}
+    __KEY_LOOKUP__ = ['env', 'environment', 'environ', 'stage']
+    __config_path__: Path = None
+    __default_env__: str = None
+    __cache__: Dict[str, T] = {}
 
     @classmethod
     def load(cls, path: Union[Path, str]) -> 'BaseConfig':
@@ -48,10 +48,10 @@ class BaseConfig(BaseModel):
         :param default_env: Default environment that should be used if none is specified via environment variable
         :param strict: If True, an exception is raised if no configuration file is found that exactly matches env name.
         """
-        cls._config_path = config_folder
-        cls._default_env = default_env
+        cls.__config_path__ = config_folder
+        cls.__default_env__ = default_env
         cls._strict = strict
-        cls._cache = {}
+        cls.__cache__ = {}
 
     @classmethod
     def get(cls) -> T:
@@ -60,14 +60,14 @@ class BaseConfig(BaseModel):
         :return: instance of config_class with all values added from the config file
         """
         env = cls._get_current_env()
-        if env not in cls._cache:
-            cls._cache[env] = cls._load_file(env)
+        if env not in cls.__cache__:
+            cls.__cache__[env] = cls._load_file(env)
 
-        return cls._cache[env]
+        return cls.__cache__[env]
 
     @classmethod
     def _load_file(cls, environment: str) -> T:
-        files = Path(cls._config_path).glob(pattern='*')
+        files = Path(cls.__config_path__).glob(pattern='*')
         if cls._strict:
             selected_files = [f for f in files if f.name == environment or f.stem == environment]
         else:
@@ -87,14 +87,14 @@ class BaseConfig(BaseModel):
 
     @classmethod
     def _get_current_env(cls) -> str:
-        keys = [key for key in os.environ.keys() if key.lower() in cls._KEY_LOOKUP]
+        keys = [key for key in os.environ.keys() if key.lower() in cls.__KEY_LOOKUP__]
 
-        if len(keys) <= 0 and cls._default_env is None:
+        if len(keys) <= 0 and cls.__default_env__ is None:
             raise Exception(f"You're using the register_folder / get combination one of the "
                             f"following environment variables need to be set: ENV, ENVIRONMENT,"
                             f"ENVIRON, env, environment, environ")
-        elif len(keys) <= 0 and cls._default_env is not None:
-            return cls._default_env
+        elif len(keys) <= 0 and cls.__default_env__ is not None:
+            return cls.__default_env__
         elif len(keys) > 1:
             logging.warning(f'More than one environment variable set using the value of {keys[0]}')
             key = keys[0]
