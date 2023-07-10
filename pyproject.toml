@@ -30,9 +30,9 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.7.2"
-pyyaml = "^5.3"
+pyyaml = ">=5.3"
 pydantic = "^2.0"
-tabulate = "^0.8.9"
+tabulate = ">=0.8.9"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.1.2"
