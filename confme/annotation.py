@@ -1,11 +1,17 @@
 # module of all supported annotations
+import os
+from typing import Any
 
 import pydantic
 from pydantic import Field
 
 
+def EnvField(default: Any, *, env_var: str, **kwargs):
+    return Field(default, default_factory=lambda: os.environ.get(env_var, default=None), **kwargs)
+
+
 def Secret(env_var: str):
-    return Field(..., env=env_var)
+    return EnvField(..., env_var=env_var)
 
 
 def OpenRange(gt: float = None, lt: float = None) -> Field:

@@ -1,12 +1,13 @@
 import os
+from typing import Type
 
-from pydantic.main import ModelMetaclass
+from pydantic import BaseModel
 
 from confme.utils.dict_util import flatten, InfiniteDict
 from confme.utils.typing import get_schema
 
 
-def env_overwrite(config_cls: ModelMetaclass):
+def env_overwrite(config_cls: Type[BaseModel]):
     # extract possible parameters
     config_dict = get_schema(config_cls)
     parameters, _ = flatten(config_dict)

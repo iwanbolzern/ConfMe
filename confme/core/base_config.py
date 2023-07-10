@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from typing import Union, Any, List, Tuple, Callable, TypeVar, Dict
 
-from pydantic import BaseSettings
+from pydantic import BaseModel
 from tabulate import tabulate
 
 from confme import source_backend
@@ -15,7 +15,7 @@ from confme.utils.dict_util import recursive_update, flatten
 T = TypeVar('T', bound='BaseConfig')
 
 
-class BaseConfig(BaseSettings):
+class BaseConfig(BaseModel):
     _KEY_LOOKUP = ['env', 'environment', 'environ', 'stage']
     _config_path: Path = None
     _default_env: str = None
@@ -32,14 +32,14 @@ class BaseConfig(BaseSettings):
         config_content = recursive_update(config_content, env_overwrite(cls))
         config_content = recursive_update(config_content, argument_overwrite(cls))
 
-        return cls.parse_obj(config_content)
+        return cls.model_validate(config_content)
 
     @classmethod
     def load_from_dict(cls, config_content: Dict) -> 'BaseConfig':
         config_content = recursive_update(config_content, env_overwrite(cls))
         config_content = recursive_update(config_content, argument_overwrite(cls))
 
-        return cls.parse_obj(config_content)
+        return cls.model_validate(config_content)
 
     @classmethod
     def register_folder(cls, config_folder: Path, default_env: str = None, strict: bool = False):
