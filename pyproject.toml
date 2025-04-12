@@ -32,8 +32,6 @@ packages = [
 python = "^3.8"
 pyyaml = ">=5.3"
 pydantic = "^2.0"
-pydantic-core = "^2.0.0"
-annotated-types = "^0.6.0"
 tabulate = ">=0.8.9"
 typing-extensions = "^4.11.0"
 

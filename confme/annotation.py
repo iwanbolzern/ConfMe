@@ -26,4 +26,4 @@ def MixedRange(gt: float = None, ge: float = None, lt: float = None, le: float =
     return Field(..., gt=gt, ge=ge, lt=lt, le=le)
 
 
-__all__ = pydantic.__all__ + [Secret, OpenRange, ClosedRange, MixedRange]
+__all__ = list(pydantic.__all__) + [Secret, OpenRange, ClosedRange, MixedRange]
