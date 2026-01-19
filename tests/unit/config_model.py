@@ -2,12 +2,12 @@ from enum import Enum
 from typing import Optional
 
 from confme import BaseConfig
-from confme.annotation import Secret, ClosedRange
+from confme.annotation import ClosedRange, Secret
 
 
 class AnyEnum(Enum):
-    V1 = 'value1'
-    V2 = 'value2'
+    V1 = "value1"
+    V2 = "value2"
 
 
 class ChildNode(BaseConfig):
@@ -17,7 +17,7 @@ class ChildNode(BaseConfig):
     # this is a comment for float
     testFloat: float
     testOptional: Optional[float] = None
-    password: str = Secret('highSecure')
+    password: str = Secret("highSecure")
     anyEnum: AnyEnum
 
 

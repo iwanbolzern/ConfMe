@@ -13,20 +13,27 @@ ConfMe makes all these features possible with just a few type annotations on pla
 ## Installation
 ConfMe can be installed from the official python package repository [pypi](https://pypi.org/project/confme/)
 
+Using pip:
+
 ```
 pip install confme
 ```
 
-Or, if you're using pipenv:
+Using pipenv:
 
 ```
 pipenv install confme
 ```
 
-Or, if you're using poetry:
+Using poetry:
 
 ```
 poetry add confme
+```
+
+Using uv:
+```
+uv add confme
 ```
 
 ## Basic Usage of confme
