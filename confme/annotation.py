@@ -6,19 +6,19 @@ import pydantic
 from pydantic import Field
 
 
-def EnvField(default: Any, *, env_var: str, **kwargs: Any) -> Any:
+def EnvField(default: Any, *, env_var: str, **kwargs: Any):
     return Field(default_factory=lambda: os.environ.get(env_var, default), **kwargs)
 
 
-def Secret(env_var: str) -> Any:
+def Secret(env_var: str):
     return EnvField(..., env_var=env_var)
 
 
-def OpenRange(gt: float | None = None, lt: float | None = None) -> Any:
+def OpenRange(gt: float | None = None, lt: float | None = None):
     return Field(..., gt=gt, lt=lt)
 
 
-def ClosedRange(ge: float | None = None, le: float | None = None) -> Any:
+def ClosedRange(ge: float | None = None, le: float | None = None):
     return Field(..., ge=ge, le=le)
 
 
@@ -27,7 +27,7 @@ def MixedRange(
     ge: float | None = None,
     lt: float | None = None,
     le: float | None = None,
-) -> Any:
+):
     return Field(..., gt=gt, ge=ge, lt=lt, le=le)
 
 
