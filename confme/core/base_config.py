@@ -132,7 +132,7 @@ class BaseConfig(BaseModel):
         :param value: update value
         """
         path_parts = path.split(".")
-        current: Any = self
+        current = self
         for i, segment in enumerate(path_parts):
             if not hasattr(current, segment):
                 raise ConfmeException(f"{segment} not found in path {'.'.join(path_parts[:i])}!")
