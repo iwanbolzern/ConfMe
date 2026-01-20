@@ -1,13 +1,13 @@
 from os import path
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 from confme.source_backend.backend_yaml import YamlFileParser
 
 FILE_PARSER = [YamlFileParser()]
 
 
-def parse_file(file_path: Union[str, Path]) -> dict[str, Any]:
+def parse_file(file_path: str | Path) -> dict[str, Any]:
     """Parses the given file with the right file parser based on the filename ending of the
     given file_path
     :param file_path: path to the file
