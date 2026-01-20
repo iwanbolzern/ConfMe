@@ -1,10 +1,11 @@
 import logging
 import os
 from pathlib import Path
-from typing import Any, Callable, ClassVar, Self
+from typing import Any, Callable, ClassVar
 
 from pydantic import BaseModel
 from tabulate import tabulate
+from typing_extensions import Self
 
 from confme import source_backend
 from confme.core.argument_overwrite import argument_overwrite
