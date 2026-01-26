@@ -1,16 +1,17 @@
 import os
-from typing import Type
 
 from pydantic import BaseModel
 
-from confme.utils.dict_util import flatten, InfiniteDict
+from confme.utils.dict_util import InfiniteDict, flatten
 from confme.utils.typing import get_schema
 
 
-def env_overwrite(config_cls: Type[BaseModel]):
+def env_overwrite(config_cls: type[BaseModel]) -> InfiniteDict:
     # extract possible parameters
     config_dict = get_schema(config_cls)
-    parameters, _ = flatten(config_dict)
+    parameters: list[str] = []
+    if config_dict is not None:
+        parameters, _ = flatten(config_dict)
 
     # make env variables case insensitive
     keys, values = zip(*os.environ.items())
@@ -21,6 +22,6 @@ def env_overwrite(config_cls: Type[BaseModel]):
     for p in parameters:
         if p.casefold() in keys:
             i = keys.index(p.casefold())
-            infinite_dict.expand(p.split('.'), values[i])
+            infinite_dict.expand(p.split("."), values[i])
 
     return infinite_dict

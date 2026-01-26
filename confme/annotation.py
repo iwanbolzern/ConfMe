@@ -6,24 +6,29 @@ import pydantic
 from pydantic import Field
 
 
-def EnvField(default: Any, *, env_var: str, **kwargs):
-    return Field(default, default_factory=lambda: os.environ.get(env_var, default=None), **kwargs)
+def EnvField(default: Any, *, env_var: str, **kwargs: Any):
+    return Field(default_factory=lambda: os.environ.get(env_var, default), **kwargs)
 
 
 def Secret(env_var: str):
     return EnvField(..., env_var=env_var)
 
 
-def OpenRange(gt: float = None, lt: float = None) -> Field:
+def OpenRange(gt: float | None = None, lt: float | None = None):
     return Field(..., gt=gt, lt=lt)
 
 
-def ClosedRange(ge: float = None, le: float = None):
+def ClosedRange(ge: float | None = None, le: float | None = None):
     return Field(..., ge=ge, le=le)
 
 
-def MixedRange(gt: float = None, ge: float = None, lt: float = None, le: float = None):
+def MixedRange(
+    gt: float | None = None,
+    ge: float | None = None,
+    lt: float | None = None,
+    le: float | None = None,
+):
     return Field(..., gt=gt, ge=ge, lt=lt, le=le)
 
 
-__all__ = list(pydantic.__all__) + [Secret, OpenRange, ClosedRange, MixedRange]
+__all__ = list(pydantic.__all__) + [Secret, OpenRange, ClosedRange, MixedRange]  # pyright: ignore[reportUnsupportedDunderAll]

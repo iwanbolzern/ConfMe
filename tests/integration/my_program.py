@@ -1,5 +1,6 @@
-from confme import BaseConfig
 from os import path
+
+from confme import BaseConfig
 
 
 class DatabaseConfig(BaseConfig):
@@ -15,7 +16,5 @@ class MyConfig(BaseConfig):
 
 dir_path = path.dirname(path.realpath(__file__))
 
-config = MyConfig.load(path.join(dir_path, 'test_config.yaml'))
+config = MyConfig.load(path.join(dir_path, "test_config.yaml"))
 print(config)
-
-
