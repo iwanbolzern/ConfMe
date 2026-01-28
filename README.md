@@ -145,6 +145,64 @@ class DatabaseConfig(BaseConfig):
     connection_type: DatabaseConnection
 ```
 
+## Path Interpolation with `%(here)s`
+Similar to Alembic's INI file functionality, ConfMe supports path interpolation using the `%(here)s` placeholder. This allows you to specify paths relative to the location of the configuration file, making your configurations portable across different environments.
+
+### Usage
+In your configuration file, use `%(here)s` to reference the directory containing the config file:
+
+```yaml
+# config/app_config.yaml
+script_location: "%(here)s/scripts"
+data_dir: "%(here)s/../data"
+log_file: "%(here)s/logs/app.log"
+```
+
+With a Python config class:
+
+```python
+from confme import BaseConfig
+
+class AppConfig(BaseConfig):
+    script_location: str
+    data_dir: str
+    log_file: str
+
+config = AppConfig.load('config/app_config.yaml')
+print(config.script_location)  # Absolute path to config/scripts
+```
+
+### How It Works
+When the configuration file is loaded, `%(here)s` is automatically replaced with the absolute path to the directory containing the configuration file. This happens before the configuration is validated, so you get fully resolved paths in your configuration object.
+
+### Benefits
+- **Portable configurations**: Your config files work regardless of where the project is located
+- **Relative paths made easy**: No need to hardcode absolute paths or compute them at runtime
+- **Works with nested configs**: Path interpolation works at any level of your configuration hierarchy
+
+### Nested Configuration Example
+```yaml
+name: "my_app"
+paths:
+  scripts: "%(here)s/scripts"
+  data: "%(here)s/data"
+  logs: "%(here)s/logs"
+```
+
+```python
+class PathsConfig(BaseConfig):
+    scripts: str
+    data: str
+    logs: str
+
+class AppConfig(BaseConfig):
+    name: str
+    paths: PathsConfig
+
+config = AppConfig.load('config/app.yaml')
+# All paths are now absolute paths relative to config/
+```
+
 ## Switching configuration based on Environment
 A very common situation is that configurations must be changed based on the execution environment (dev, test, prod). This can be accomplished 
 by registering a folder with one .yaml file per environment and seting the `ENV` environment variable to the value you need. An example could look 
