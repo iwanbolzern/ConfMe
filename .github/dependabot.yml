@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: "uv"  # Target uv (manages pyproject.toml / uv.lock)
+    directory: "/"           # Path to your pyproject.toml or uv.lock
+    schedule:
+      interval: "weekly"     # Options: "daily", "weekly", or "monthly"
+
+    # Grouping rules
+    groups:
+      minor-and-patch-updates:
+        patterns:
+          - "*"              # Apply to all Python packages in the workspace
+        update-types:
+          - "minor"
+          - "patch"          # Includes patch updates with minor bumps in the same PR
