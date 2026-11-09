@@ -3,10 +3,10 @@
 import logging
 from typing import Any, TextIO
 
-import yaml
-from yaml.parser import ParserError
-
 from confme.source_backend.backend_base import BaseFileParser
+from confme.source_backend.yaml_parser import ParserError, load
+
+__all__ = ["ParserError", "YamlFileParser"]
 
 
 class YamlFileParser(BaseFileParser):
@@ -23,8 +23,14 @@ class YamlFileParser(BaseFileParser):
         :param file: yaml file stream
         :return: Content of yaml file converted to dict
         """
+        name = getattr(file, "name", None)
         try:
-            return yaml.safe_load(file)
-        except ParserError as err:
+            content = load(file.read(), name if isinstance(name, str) else None)
+            if content is None:
+                return {}
+            if not isinstance(content, dict):
+                raise ParserError(f"The top-level element of a configuration file must be a mapping ({name})")
+            return content
+        except ParserError:
             logging.exception("Not able to parse yaml file")
-            raise ParserError from err
+            raise
