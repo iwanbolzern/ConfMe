@@ -147,11 +147,9 @@ wheels = [
 
 [[package]]
 name = "confme"
-version = "2.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "pydantic" },
-    { name = "pyyaml" },
     { name = "tabulate" },
     { name = "typing-extensions" },
 ]
@@ -161,6 +159,7 @@ dev = [
     { name = "pyright" },
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "pyyaml" },
     { name = "recommonmark" },
     { name = "ruff" },
     { name = "sphinx" },
@@ -169,7 +168,6 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "pydantic", specifier = ">=2.12,<3" },
-    { name = "pyyaml", specifier = ">=5.3" },
     { name = "tabulate", specifier = ">=0.8.9" },
     { name = "typing-extensions", specifier = ">=4.11.0,<5" },
 ]
@@ -179,6 +177,7 @@ dev = [
     { name = "pyright", specifier = "~=1.1" },
     { name = "pytest", specifier = ">=6.1.2" },
     { name = "pytest-cov", specifier = ">=2.11.1" },
+    { name = "pyyaml", specifier = ">=5.3" },
     { name = "recommonmark", specifier = ">=0.6.0,<0.8" },
     { name = "ruff", specifier = ">=0.9" },
     { name = "sphinx", specifier = ">=3.2.1,<9" },

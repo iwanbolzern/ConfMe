@@ -1,6 +1,6 @@
 [project]
 name = "confme"
-version = "2.2.0"
+dynamic = ["version"]
 description = "Easy configuration management in python"
 authors = [{ name = "Iwan Silvan Bolzern", email = "iwan.bolzern@roche.com" }]
 requires-python = ">=3.10,<4"
@@ -23,7 +23,6 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "pyyaml>=5.3",
     "pydantic>=2.12,<3",
     "tabulate>=0.8.9",
     "typing-extensions>=4.11.0,<5",
@@ -36,6 +35,7 @@ Repository = "https://github.com/iwanbolzern/confme"
 [dependency-groups]
 dev = [
     "pytest>=6.1.2",
+    "pyyaml>=5.3",
     "pyright ~= 1.1",
     "sphinx>=3.2.1,<9",
     "recommonmark>=0.6.0,<0.8",
@@ -45,13 +45,23 @@ dev = [
 
 [tool.uv]
 
-[tool.uv.build-backend]
-module-name = ["confme"]
-module-root = ""
-
 [build-system]
-requires = ["uv_build>=0.8.15,<0.13.0"]
-build-backend = "uv_build"
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "pep440"
+bump = true
+
+[tool.uv-dynamic-versioning.substitution]
+folders = [
+    { path = "src" }
+]
 
 [tool.pyright]
 include = ["confme", "tests"]

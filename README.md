@@ -42,10 +42,12 @@ Define your config structure as plain python objects with type annotations:
 ```python
 from confme import BaseConfig
 
+
 class DatabaseConfig(BaseConfig):
     host: str
     port: int
     user: str
+
 
 class MyConfig(BaseConfig):
     name: str
@@ -65,13 +67,19 @@ database:
 Load the yaml file into your Python object structure and access it in a secure manner:
 
 ```python
-my_config = MyConfig.load('config.yaml')
+my_config = MyConfig.load("config.yaml")
 
-print(f'Using database connection {my_config.database.host} '
-      f'on port {my_config.database.port}')
+print(f"Using database connection {my_config.database.host} on port {my_config.database.port}")
 ```
 
 In the background the yaml file is parsed and mapped to the defined object structure. While mapping the values to object properties, type checks are performed. If a value is not available or is not of the correct type, an error is generated already when the configuration is loaded.
+
+### YAML Support
+ConfMe ships its own pure Python YAML parser and does not depend on PyYAML. It parses configuration files the same way
+as PyYAML's `yaml.safe_load` (YAML 1.1), including anchors, aliases, merge keys (`<<`), multi-line and block scalars,
+flow collections (JSON documents are valid YAML) and the standard tags such as `!!str` or `!!binary`. Each file must
+contain a single document whose top-level element is a mapping. Invalid files raise a
+`confme.source_backend.backend_yaml.ParserError` (a `ConfmeException`) containing the file name, line and column.
 
 ## Supported Annotations
 ConfMe is based on pydantic and supports all annotations provided by pydantic. The most important annotations are listed and explain bellow. For the whole list, please checkout [Field Types](https://pydantic-docs.helpmanual.io/usage/types/):
@@ -92,9 +100,10 @@ With the Secret annotation you can inject secrets from environment variables dir
 from confme import BaseConfig
 from confme.annotation import Secret
 
+
 class DatabaseConfig(BaseConfig):
     ...
-    password: str = Secret('highSecurePassword')
+    password: str = Secret("highSecurePassword")
 ```
 
 Now set the password to the defined environment variable:
@@ -123,6 +132,7 @@ If you want to have a mixture of both, e.g. include 2 but exclude 3 use MixedRan
 from confme import BaseConfig
 from confme.annotation import ClosedRange
 
+
 class DatabaseConfig(BaseConfig):
     ...
     password: int = ClosedRange(2, 3)
@@ -136,9 +146,11 @@ If a Python Enum is set as type annotation, ConfMe expect to find the enum value
 from confme import BaseConfig
 from enum import Enum
 
+
 class DatabaseConnection(Enum):
-    TCP = 'tcp'
-    UDP = 'udp'
+    TCP = "tcp"
+    UDP = "udp"
+
 
 class DatabaseConfig(BaseConfig):
     ...
@@ -163,12 +175,14 @@ With a Python config class:
 ```python
 from confme import BaseConfig
 
+
 class AppConfig(BaseConfig):
     script_location: str
     data_dir: str
     log_file: str
 
-config = AppConfig.load('config/app_config.yaml')
+
+config = AppConfig.load("config/app_config.yaml")
 print(config.script_location)  # Absolute path to config/scripts
 ```
 
@@ -195,11 +209,13 @@ class PathsConfig(BaseConfig):
     data: str
     logs: str
 
+
 class AppConfig(BaseConfig):
     name: str
     paths: PathsConfig
 
-config = AppConfig.load('config/app.yaml')
+
+config = AppConfig.load("config/app.yaml")
 # All paths are now absolute paths relative to config/
 ```
 
@@ -225,13 +241,12 @@ The definition of `my_config.py` is equivalent to the one used in the basic intr
 following way:
 ```python
 # we register the folder where ConfME can find the configuration files
-MyConfig.register_folder(Path(__file__).parent / '../config')
+MyConfig.register_folder(Path(__file__).parent / "../config")
 ...
 
-# we access the instance of the corresponding configuration file anywhere in our project. 
+# we access the instance of the corresponding configuration file anywhere in our project.
 my_config = MyConfig.get()
-print(f'Using database connection {my_config.database.host} '
-      f'on port {my_config.database.port}')
+print(f"Using database connection {my_config.database.host} on port {my_config.database.port}")
 ```
 If now one of the following environment variables (precedence in descending order): `['env', 'environment', 'environ', 'stage']` is 
 set e.g. `export ENV=prod` it will load the configuration file with `prod` in its name.
@@ -250,16 +265,19 @@ Especially in the Data Science and Machine Learning area it is useful to pass ce
 ```python
 from confme import BaseConfig
 
+
 class DatabaseConfig(BaseConfig):
     host: str
     port: int
     user: str
 
+
 class MyConfig(BaseConfig):
     name: int
     database: DatabaseConfig
 
-config = MyConfig.load('test.yaml')
+
+config = MyConfig.load("test.yaml")
 ```
 
 When you now start your program from the command line with the ```++help``` argument, you get the full list of all configuration options. **CAVEAT!** In order to not interfere with other cli tools, the prefix - was changed to +:
